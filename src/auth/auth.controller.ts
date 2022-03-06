@@ -18,4 +18,19 @@ export class AuthController {
   signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
     return this.authService.signUp(authCredentialsDto);
   }
+
+  // Decorator for Post method
+  @Post('/signin')
+  /**
+   * Sign into the app
+   *
+   * @param authCredentialsDto AuthCredentialsDto
+   *
+   * @return void
+   */
+  signIn(
+    @Body() authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ accessToken: string }> {
+    return this.authService.signIn(authCredentialsDto);
+  }
 }
