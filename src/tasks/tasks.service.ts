@@ -5,6 +5,7 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TasksRepository } from './tasks.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
+import { User } from 'src/auth/user.entity';
 
 // Makes this a singleton that can be injected into any controller
 @Injectable()
@@ -14,38 +15,16 @@ export class TasksService {
     private tasksRepository: TasksRepository,
   ) {}
 
-  /**
-   * Gets tasks
-   *
-   * @param filterDto GetTasksFilterDto
-   *
-   * @returns Task[]
-   */
-  getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
-    return this.tasksRepository.getTasks(filterDto);
+  getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
+    return this.tasksRepository.getTasks(filterDto, user);
   }
 
-  /**
-   * Creates a Task
-   *
-   * @param title string
-   * @param description string
-   *
-   * @returns Task
-   */
-  createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    return this.tasksRepository.createTask(createTaskDto);
+  createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+    return this.tasksRepository.createTask(createTaskDto, user);
   }
 
-  /**
-   * Gets a Task by the ID
-   *
-   * @param id string
-   *
-   * @returns Task
-   */
-  async getTaskById(id: string): Promise<Task> {
-    const found = await this.tasksRepository.findOne(id);
+  async getTaskById(id: string, user: User): Promise<Task> {
+    const found = await this.tasksRepository.findOne({ id, user });
 
     if (!found) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
@@ -54,17 +33,13 @@ export class TasksService {
     return found;
   }
 
-  /**
-   * Updates a tasks status
-   *
-   * @param id string
-   * @param status TaskStatus
-   *
-   * @returns Task
-   */
-  async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
+  async updateTaskStatus(
+    id: string,
+    status: TaskStatus,
+    user: User,
+  ): Promise<Task> {
     // Obtain the task
-    const task = await this.getTaskById(id);
+    const task = await this.getTaskById(id, user);
 
     // Assign the new status
     task.status = status;
@@ -75,15 +50,8 @@ export class TasksService {
     return task;
   }
 
-  /**
-   * Deletes a task from the array
-   *
-   * @param id string
-   *
-   * @returns Task
-   */
-  async deleteTask(id: string): Promise<void> {
-    const result = await this.tasksRepository.delete(id);
+  async deleteTask(id: string, user: User): Promise<void> {
+    const result = await this.tasksRepository.delete({ id, user });
 
     if (result.affected === 0) {
       throw new NotFoundException(`Task with ID "${id}" not found`);
