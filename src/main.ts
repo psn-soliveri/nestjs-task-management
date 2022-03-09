@@ -2,8 +2,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './transform.interceptor';
+// TODO: Better logging package https://github.com/iamolegga/nestjs-pino
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
+  const logger = new Logger();
   const app = await NestFactory.create(AppModule);
 
   // Adding validation pipes globally to cut down code on the controller level
@@ -12,6 +15,9 @@ async function bootstrap() {
   // Adding custom global interceptor
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  await app.listen(3000);
+  const port = 3000;
+  await app.listen(port);
+
+  logger.log(`application listening on port ${port}`);
 }
 bootstrap();

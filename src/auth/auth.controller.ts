@@ -8,26 +8,12 @@ export class AuthController {
 
   // Decorator for Post method
   @Post('/signup')
-  /**
-   * Sign up to the app
-   *
-   * @param authCredentialsDto AuthCredentialsDto
-   *
-   * @return void
-   */
   signUp(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
     return this.authService.signUp(authCredentialsDto);
   }
 
   // Decorator for Post method
   @Post('/signin')
-  /**
-   * Sign into the app
-   *
-   * @param authCredentialsDto AuthCredentialsDto
-   *
-   * @return void
-   */
   signIn(
     @Body() authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
