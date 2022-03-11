@@ -8,6 +8,8 @@ import { Logger } from '@nestjs/common';
 async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
+  // IMPORTANT: ONLY DONE FOR THE PERPOSE OF THIS COURSE
+  app.enableCors();
 
   // Adding validation pipes globally to cut down code on the controller level
   app.useGlobalPipes(new ValidationPipe());
